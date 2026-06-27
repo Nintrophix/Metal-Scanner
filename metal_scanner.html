@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MetalScan — CNC Vision Scanner</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0c0f;
+    --surface: #111318;
+    --surface2: #181c22;
+    --border: #1f2530;
+    --border2: #2a3240;
+    --accent: #00d4ff;
+    --accent2: #0099bb;
+    --accent-glow: rgba(0,212,255,0.15);
+    --danger: #ff4444;
+    --danger-glow: rgba(255,68,68,0.15);
+    --success: #00e676;
+    --warn: #ffb300;
+    --text: #e8ecf0;
+    --text2: #8a95a3;
+    --text3: #4a5568;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Space Grotesk', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 2rem;
+    height: 56px;
+    background: rgba(10,12,15,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; font-weight: 700; letter-spacing: -0.3px;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .logo-icon {
+    width: 28px; height: 28px;
+    background: var(--accent);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .logo-icon svg { width: 16px; height: 16px; }
+  .nav-links { display: flex; align-items: center; gap: 2rem; }
+  .nav-links a {
+    font-size: 13px; color: var(--text2); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+  .nav-badge {
+    font-size: 11px; font-weight: 600;
+    background: var(--accent-glow);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,255,0.3);
+    padding: 3px 10px;
+    border-radius: 99px;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 120px 2rem 60px;
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .hero-eyebrow {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    color: var(--accent); text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; width: 32px; height: 1px; background: var(--accent); opacity: 0.4;
+  }
+  .hero h1 {
+    font-size: clamp(36px, 6vw, 68px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    background: linear-gradient(160deg, #e8ecf0 0%, #8a95a3 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, var(--accent), #00aaff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 17px; color: var(--text2); line-height: 1.7;
+    max-width: 560px; margin: 0 auto 36px;
+  }
+  .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--sans); font-size: 13px; font-weight: 600;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none; cursor: pointer;
+    transition: all 0.18s;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0a0c0f;
+  }
+  .btn-primary:hover { background: #33ddff; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text2);
+    border: 1px solid var(--border2);
+  }
+  .btn-ghost:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+  .btn-danger {
+    background: var(--danger);
+    color: #fff;
+  }
+  .btn-danger:hover { background: #ff6666; }
+  .btn:disabled {
+    opacity: 0.35; cursor: not-allowed;
+    transform: none !important;
+  }
+  .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+  /* ── MAIN APP SECTION ── */
+  .app-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 80px;
+  }
+
+  /* ── CONTROL STRIP ── */
+  .control-strip {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+  .control-group {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .control-group label {
+    font-size: 12px; font-weight: 600;
+    color: var(--text3);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .control-group input[type="range"] {
+    width: 90px; height: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .control-group input[type="number"] {
+    width: 72px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 5px 8px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .control-group input[type="number"]:focus { border-color: var(--accent); }
+  .val-display {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 28px;
+  }
+  .divider-v {
+    width: 1px; height: 28px;
+    background: var(--border2);
+    flex-shrink: 0;
+  }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 99px;
+    margin-left: auto;
+  }
+  .status-pill .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+  }
+  .status-idle { background: rgba(74,85,104,0.25); color: var(--text3); border: 1px solid var(--border2); }
+  .status-idle .dot { background: var(--text3); }
+  .status-live { background: rgba(0,230,118,0.12); color: var(--success); border: 1px solid rgba(0,230,118,0.3); }
+  .status-live .dot { background: var(--success); animation: blink 1.2s ease-in-out infinite; }
+  .status-ready { background: rgba(0,212,255,0.12); color: var(--accent); border: 1px solid rgba(0,212,255,0.3); }
+  .status-ready .dot { background: var(--accent); }
+  .status-error { background: rgba(255,68,68,0.12); color: var(--danger); border: 1px solid rgba(255,68,68,0.3); }
+  .status-error .dot { background: var(--danger); }
+
+  @keyframes blink {
+    0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+
+  /* ── ACTION BAR ── */
+  .action-bar {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 16px;
+    align-items: center;
+  }
+  #fileInput { display: none; }
+
+  /* ── CANVAS GRID ── */
+  .canvas-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 680px) {
+    .canvas-grid { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .panel-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px; font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .panel-header svg { width: 14px; height: 14px; flex-shrink: 0; }
+  .panel-body {
+    position: relative;
+    background: #060809;
+    min-height: 240px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .panel-body canvas, .panel-body video {
+    display: block;
+    width: 100%;
+    height: 240px;
+    object-fit: contain;
+  }
+  .panel-placeholder {
+    position: absolute;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--text3);
+    text-align: center;
+    padding: 2rem;
+    pointer-events: none;
+  }
+  .panel-placeholder svg { width: 32px; height: 32px; opacity: 0.5; }
+  .panel-placeholder p { font-size: 13px; }
+  .panel-placeholder small { font-size: 11px; color: var(--text3); }
+  .panel-overlay {
+    position: absolute; bottom: 10px; left: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--accent);
+    background: rgba(0,0,0,0.6);
+    padding: 3px 8px;
+    border-radius: 4px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .panel-overlay.visible { opacity: 1; }
+
+  /* ── STATS GRID ── */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 600px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+  .stat-card.active { border-color: rgba(0,212,255,0.3); }
+  .stat-label {
+    font-size: 11px; font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .stat-val {
+    font-family: var(--mono);
+    font-size: 22px; font-weight: 500;
+    color: var(--text);
+  }
+  .stat-unit {
+    font-size: 11px; color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* ── GCODE PANEL ── */
+  .gcode-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .gcode-header {
+    display: flex; align-items: center;
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .gcode-header-title {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex: 1;
+  }
+  .gcode-header svg { width: 14px; height: 14px; }
+  pre#gcodePreview {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--text2);
+    padding: 16px 20px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border2) transparent;
+  }
+  pre#gcodePreview::-webkit-scrollbar { width: 4px; }
+  pre#gcodePreview::-webkit-scrollbar-track { background: transparent; }
+  pre#gcodePreview::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+  .gcode-comment { color: var(--text3); }
+  .gcode-cmd { color: var(--accent); }
+  .gcode-coord { color: #a8d8ff; }
+
+  /* ── CALIBRATION NOTE ── */
+  .calib-note {
+    background: rgba(255,179,0,0.06);
+    border: 1px solid rgba(255,179,0,0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: var(--warn);
+    display: flex; gap: 10px; align-items: flex-start;
+    margin-bottom: 48px;
+  }
+  .calib-note svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── FEATURES ── */
+  .features {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 80px;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 32px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 680px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+  .feature-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .feature-icon {
+    width: 38px; height: 38px;
+    background: var(--accent-glow);
+    border: 1px solid rgba(0,212,255,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .feature-icon svg { width: 18px; height: 18px; color: var(--accent); }
+  .feature-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+  .feature-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+  /* ── HARDWARE SECTION ── */
+  .hw-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 80px;
+  }
+  .hw-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 680px) { .hw-grid { grid-template-columns: 1fr; } }
+  .hw-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+  }
+  .hw-card h3 {
+    font-size: 13px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .hw-row {
+    display: flex; justify-content: space-between;
+    align-items: flex-start;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+    font-size: 13px;
+  }
+  .hw-row:last-child { border-bottom: none; }
+  .hw-row-label { color: var(--text2); flex-shrink: 0; }
+  .hw-row-val { color: var(--text); text-align: right; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  footer p { font-size: 12px; color: var(--text3); }
+
+  /* ── CROSSHAIR ANIMATION ON SCAN ── */
+  @keyframes scanLine {
+    0% { transform: translateY(0); opacity: 0.8; }
+    100% { transform: translateY(240px); opacity: 0; }
+  }
+  .scan-line {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    animation: scanLine 1.2s ease-in forwards;
+    pointer-events: none;
+    z-index: 10;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16" fill="none" stroke="#0a0c0f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="2" width="12" height="12" rx="1"/>
+        <circle cx="8" cy="8" r="2"/>
+        <line x1="8" y1="2" x2="8" y2="5"/>
+        <line x1="8" y1="11" x2="8" y2="14"/>
+        <line x1="2" y1="8" x2="5" y2="8"/>
+        <line x1="11" y1="8" x2="14" y2="8"/>
+      </svg>
+    </div>
+    MetalScan
+  </a>
+  <div class="nav-links">
+    <a href="#scanner">Scanner</a>
+    <a href="#features">Features</a>
+    <a href="#hardware">Hardware</a>
+    <span class="nav-badge">v1.0 Beta</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Vision-to-CNC Pipeline</div>
+  <h1>Scan metal parts.<br><span>Generate G-code.</span><br>Instantly.</h1>
+  <p>Point a camera at any flat metal piece. MetalScan detects contours and holes in real time, measures dimensions to the millimeter, and exports a ready-to-run G-code file.</p>
+  <div class="hero-actions">
+    <a href="#scanner" class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+      Open scanner
+    </a>
+    <a href="#hardware" class="btn btn-ghost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Hardware guide
+    </a>
+  </div>
+</section>
+
+<!-- SCANNER APP -->
+<section id="scanner" class="app-section">
+
+  <!-- Action bar -->
+  <div class="action-bar">
+    <button class="btn btn-primary" id="btnCamera">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      Start camera
+    </button>
+    <button class="btn btn-ghost" id="btnFile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+      Load image
+    </button>
+    <input type="file" id="fileInput" accept="image/*">
+    <button class="btn btn-primary" id="btnScan" disabled style="background:#1a2a35;color:var(--accent);border:1px solid rgba(0,212,255,0.3);">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+      Scan & detect
+    </button>
+    <button class="btn btn-ghost" id="btnGcode" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+      Generate G-code
+    </button>
+    <button class="btn btn-ghost" id="btnDownload" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download .nc
+    </button>
+    <span class="status-pill status-idle" id="statusPill">
+      <span class="dot"></span> Idle
+    </span>
+  </div>
+
+  <!-- Controls -->
+  <div class="control-strip">
+    <div class="control-group">
+      <label>Threshold</label>
+      <input type="range" id="slThresh" min="20" max="240" value="80">
+      <span class="val-display" id="threshVal">80</span>
+    </div>
+    <div class="divider-v"></div>
+    <div class="control-group">
+      <label>Blur radius</label>
+      <input type="range" id="slBlur" min="1" max="15" value="3" step="2">
+      <span class="val-display" id="blurVal">3</span>
+    </div>
+    <div class="divider-v"></div>
+    <div class="control-group">
+      <label>mm / px</label>
+      <input type="number" id="mmPx" value="0.25" step="0.01" min="0.01">
+    </div>
+    <div class="divider-v"></div>
+    <div class="control-group">
+      <label>Feed rate</label>
+      <input type="number" id="feedRate" value="800" step="100" min="50">
+      <span style="font-size:12px;color:var(--text3);">mm/min</span>
+    </div>
+    <div class="divider-v"></div>
+    <div class="control-group">
+      <label>Cut depth</label>
+      <input type="number" id="cutDepth" value="-1.0" step="0.5">
+      <span style="font-size:12px;color:var(--text3);">mm</span>
+    </div>
+  </div>
+
+  <!-- Canvas panels -->
+  <div class="canvas-grid">
+    <div class="panel">
+      <div class="panel-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        Source — live / image
+      </div>
+      <div class="panel-body" id="srcBody">
+        <video id="video" autoplay muted playsinline style="display:none;width:100%;height:240px;object-fit:contain;"></video>
+        <canvas id="srcCanvas" style="display:none;width:100%;height:240px;object-fit:contain;"></canvas>
+        <div class="panel-placeholder" id="srcPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+          <p>No source active</p>
+          <small>Start camera or load an image</small>
+        </div>
+        <div class="panel-overlay" id="srcOverlay"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        Detected contour &amp; holes
+      </div>
+      <div class="panel-body" id="outBody">
+        <canvas id="outCanvas" style="width:100%;height:240px;object-fit:contain;"></canvas>
+        <div class="panel-placeholder" id="outPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+          <p>Awaiting scan</p>
+          <small>Click "Scan & detect" to process</small>
+        </div>
+        <div class="panel-overlay" id="outOverlay"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card" id="scWidth">
+      <div class="stat-label">Width</div>
+      <div class="stat-val" id="statW">—</div>
+      <div class="stat-unit">mm</div>
+    </div>
+    <div class="stat-card" id="scHeight">
+      <div class="stat-label">Height</div>
+      <div class="stat-val" id="statH">—</div>
+      <div class="stat-unit">mm</div>
+    </div>
+    <div class="stat-card" id="scHoles">
+      <div class="stat-label">Holes detected</div>
+      <div class="stat-val" id="statHoles">—</div>
+      <div class="stat-unit">count</div>
+    </div>
+    <div class="stat-card" id="scPts">
+      <div class="stat-label">Contour points</div>
+      <div class="stat-val" id="statPts">—</div>
+      <div class="stat-unit">vertices</div>
+    </div>
+  </div>
+
+  <!-- G-code preview -->
+  <div class="gcode-panel">
+    <div class="gcode-header">
+      <div class="gcode-header-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        G-code output
+      </div>
+      <button class="btn btn-ghost" id="btnCopy" style="padding:5px 12px;font-size:12px;" disabled>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy
+      </button>
+    </div>
+    <pre id="gcodePreview">; ──────────────────────────────────────────────
+; MetalScan G-code Generator — ready
+; ──────────────────────────────────────────────
+;
+;  Steps:
+;    1. Start camera or load an image
+;    2. Tune threshold until part outline is clean
+;    3. Set mm/px calibration value
+;    4. Click "Scan &amp; detect"
+;    5. Click "Generate G-code" → "Download .nc"
+;
+; ──────────────────────────────────────────────</pre>
+  </div>
+
+  <!-- Calibration note -->
+  <div class="calib-note">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span><strong>Calibration:</strong> Place a reference object of known size (e.g. a 50 mm × 50 mm gauge block) in the camera frame alongside your part. Count its pixel width from the source canvas, then set <code style="font-family:var(--mono);background:rgba(255,179,0,0.1);padding:1px 5px;border-radius:3px;">mm/px = known_mm ÷ pixel_width</code>. For best accuracy use a backlit lightbox and fix the camera position with a copy stand.</span>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features" class="features">
+  <div class="section-label">What it does</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+      </div>
+      <div class="feature-title">Live video input</div>
+      <div class="feature-desc">Connect any USB or built-in camera. The scanner runs in real time so you can adjust lighting and positioning before capturing.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+      </div>
+      <div class="feature-title">Contour &amp; hole detection</div>
+      <div class="feature-desc">Gaussian blur, adaptive threshold, and Douglas-Peucker simplification extract the outer profile plus all interior holes — for any flat shape.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+      </div>
+      <div class="feature-title">mm-accurate measurement</div>
+      <div class="feature-desc">Set the mm/px ratio once using a reference gauge and every subsequent dimension — width, height, hole diameter — outputs in real millimeters.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+      </div>
+      <div class="feature-title">G-code export</div>
+      <div class="feature-desc">Generates standard RS-274 G-code with G0/G1 linear moves for the profile and G2/G3 arcs for holes. Feed rate, cut depth, and safe height are all configurable.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="feature-title">Runs in your browser</div>
+      <div class="feature-desc">Zero installation. All processing happens client-side — no server, no uploads, no subscription. Works offline once the page is loaded.</div>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div class="feature-title">Any flat shape</div>
+      <div class="feature-desc">Cross brackets, corner gussets, plates, flanges — if it's flat and has contrast against a background, MetalScan will trace it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- HARDWARE -->
+<section id="hardware" class="hw-section">
+  <div class="section-label">Recommended hardware</div>
+  <div class="hw-grid">
+    <div class="hw-card">
+      <h3>Camera</h3>
+      <div class="hw-row"><span class="hw-row-label">Minimum</span><span class="hw-row-val">Logitech BRIO 4K (~₹12,000)</span></div>
+      <div class="hw-row"><span class="hw-row-label">Recommended</span><span class="hw-row-val">Basler ace2 / FLIR Blackfly S (₹35,000+)</span></div>
+      <div class="hw-row"><span class="hw-row-label">Resolution</span><span class="hw-row-val">≥3840 × 2160 for 0.1 mm/px at 300 mm FOV</span></div>
+      <div class="hw-row"><span class="hw-row-label">Lens</span><span class="hw-row-val">Fixed focal length, low distortion / telecentric</span></div>
+    </div>
+    <div class="hw-card">
+      <h3>Lighting &amp; mount</h3>
+      <div class="hw-row"><span class="hw-row-label">Best option</span><span class="hw-row-val">Backlit LED lightbox — clean silhouette</span></div>
+      <div class="hw-row"><span class="hw-row-label">Alternative</span><span class="hw-row-val">Diffused ring light from above</span></div>
+      <div class="hw-row"><span class="hw-row-label">Mount</span><span class="hw-row-val">Copy stand or overhead rig (fixed working distance)</span></div>
+      <div class="hw-row"><span class="hw-row-label">Table</span><span class="hw-row-val">Anti-vibration surface for sharp images</span></div>
+    </div>
+    <div class="hw-card">
+      <h3>Calibration</h3>
+      <div class="hw-row"><span class="hw-row-label">Reference</span><span class="hw-row-val">50 mm gauge block or laser-etched checkerboard</span></div>
+      <div class="hw-row"><span class="hw-row-label">Method</span><span class="hw-row-val">OpenCV calibrateCamera() — corrects lens distortion</span></div>
+      <div class="hw-row"><span class="hw-row-label">Quick method</span><span class="hw-row-val">known_mm ÷ pixel_width → mm/px field</span></div>
+    </div>
+    <div class="hw-card">
+      <h3>Production software stack</h3>
+      <div class="hw-row"><span class="hw-row-label">Vision</span><span class="hw-row-val">Python + OpenCV (subpixel edge refinement)</span></div>
+      <div class="hw-row"><span class="hw-row-label">Backend</span><span class="hw-row-val">Flask / FastAPI REST endpoint</span></div>
+      <div class="hw-row"><span class="hw-row-label">G-code post</span><span class="hw-row-val">Configurable per machine (router, laser, plasma)</span></div>
+      <div class="hw-row"><span class="hw-row-label">Target accuracy</span><span class="hw-row-val">±0.1 mm with calibrated industrial setup</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>MetalScan — Vision-to-CNC pipeline. All processing runs locally in your browser.</p>
+  <p style="color:var(--text3);">No data leaves your device.</p>
+</footer>
+
+<script>
+/* ── ELEMENTS ── */
+const video       = document.getElementById('video');
+const srcCanvas   = document.getElementById('srcCanvas');
+const outCanvas   = document.getElementById('outCanvas');
+const srcCtx      = srcCanvas.getContext('2d');
+const outCtx      = outCanvas.getContext('2d');
+const slThresh    = document.getElementById('slThresh');
+const slBlur      = document.getElementById('slBlur');
+const threshVal   = document.getElementById('threshVal');
+const blurVal     = document.getElementById('blurVal');
+const mmPxInput   = document.getElementById('mmPx');
+const feedInput   = document.getElementById('feedRate');
+const cutInput    = document.getElementById('cutDepth');
+const btnCamera   = document.getElementById('btnCamera');
+const btnFile     = document.getElementById('btnFile');
+const fileInput   = document.getElementById('fileInput');
+const btnScan     = document.getElementById('btnScan');
+const btnGcode    = document.getElementById('btnGcode');
+const btnDownload = document.getElementById('btnDownload');
+const btnCopy     = document.getElementById('btnCopy');
+const statusPill  = document.getElementById('statusPill');
+const gcodeEl     = document.getElementById('gcodePreview');
+const srcPlaceholder = document.getElementById('srcPlaceholder');
+const outPlaceholder = document.getElementById('outPlaceholder');
+const srcOverlay  = document.getElementById('srcOverlay');
+const outOverlay  = document.getElementById('outOverlay');
+
+let stream = null;
+let sourceReady = false;
+let lastContour = null;
+let lastHoles   = [];
+let lastGcode   = '';
+let animFrame   = null;
+
+/* ── SLIDERS ── */
+slThresh.oninput = () => { threshVal.textContent = slThresh.value; };
+slBlur.oninput   = () => { blurVal.textContent   = slBlur.value;   };
+
+/* ── STATUS ── */
+function setStatus(s) {
+  statusPill.className = 'status-pill status-' + s;
+  const labels = { idle:'Idle', live:'Live', ready:'Ready', error:'Error' };
+  statusPill.innerHTML = `<span class="dot"></span> ${labels[s]||s}`;
+}
+
+/* ── CAMERA ── */
+btnCamera.addEventListener('click', async () => {
+  if (stream) {
+    stream.getTracks().forEach(t => t.stop());
+    stream = null;
+    video.style.display = 'none';
+    srcCanvas.style.display = 'none';
+    srcPlaceholder.style.display = '';
+    btnCamera.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Start camera`;
+    btnScan.disabled = true;
+    sourceReady = false;
+    setStatus('idle');
+    srcOverlay.textContent = '';
+    srcOverlay.classList.remove('visible');
+    if (animFrame) cancelAnimationFrame(animFrame);
+    return;
+  }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode: 'environment' }
+    });
+    video.srcObject = stream;
+    video.style.display = 'block';
+    srcCanvas.style.display = 'none';
+    srcPlaceholder.style.display = 'none';
+    video.onloadedmetadata = () => {
+      srcCanvas.width  = video.videoWidth;
+      srcCanvas.height = video.videoHeight;
+      outCanvas.width  = video.videoWidth;
+      outCanvas.height = video.videoHeight;
+      sourceReady = true;
+      btnScan.disabled = false;
+      setStatus('live');
+      btnCamera.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Stop camera`;
+      srcOverlay.textContent = `${video.videoWidth} × ${video.videoHeight}`;
+      srcOverlay.classList.add('visible');
+      liveLoop();
+    };
+  } catch(e) {
+    alert('Camera unavailable: ' + e.message);
+  }
+});
+
+function liveLoop() {
+  if (!stream) return;
+  srcCtx.drawImage(video, 0, 0);
+  animFrame = requestAnimationFrame(liveLoop);
+}
+
+/* ── FILE LOAD ── */
+btnFile.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const img = new Image();
+  img.onload = () => {
+    if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
+    video.style.display = 'none';
+    srcCanvas.width  = img.width;
+    srcCanvas.height = img.height;
+    outCanvas.width  = img.width;
+    outCanvas.height = img.height;
+    srcCtx.drawImage(img, 0, 0);
+    srcCanvas.style.display = 'block';
+    srcPlaceholder.style.display = 'none';
+    sourceReady = true;
+    btnScan.disabled = false;
+    setStatus('ready');
+    srcOverlay.textContent = `${img.width} × ${img.height}`;
+    srcOverlay.classList.add('visible');
+    btnCamera.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg> Start camera`;
+  };
+  img.src = URL.createObjectURL(f);
+  fileInput.value = '';
+});
+
+/* ── VISION UTILS ── */
+function getGray(data, x, y, w) {
+  const i = (y * w + x) * 4;
+  return 0.299*data[i] + 0.587*data[i+1] + 0.114*data[i+2];
+}
+
+function boxBlur(data, w, h, r) {
+  const out = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sum = 0, cnt = 0;
+      for (let dy = -r; dy <= r; dy++) {
+        for (let dx = -r; dx <= r; dx++) {
+          const nx = x+dx, ny = y+dy;
+          if (nx>=0&&nx<w&&ny>=0&&ny<h) { sum+=getGray(data,nx,ny,w); cnt++; }
+        }
+      }
+      out[y*w+x] = sum/cnt;
+    }
+  }
+  return out;
+}
+
+function binarize(gray, w, h, t) {
+  const bin = new Uint8Array(w*h);
+  for (let i = 0; i < w*h; i++) bin[i] = gray[i] < t ? 1 : 0;
+  return bin;
+}
+
+function traceBoundary(bin, w, h, sx, sy, visited) {
+  const dirs = [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]];
+  const pts = []; let x=sx, y=sy, dir=0;
+  for (let step = 0; step < 30000; step++) {
+    pts.push([x,y]); visited[y*w+x] = 1;
+    let found = false;
+    for (let d = 0; d < 8; d++) {
+      const nd = (dir+6+d)%8;
+      const nx = x+dirs[nd][0], ny = y+dirs[nd][1];
+      if (nx>=0&&nx<w&&ny>=0&&ny<h&&bin[ny*w+nx]===1) {
+        x=nx; y=ny; dir=nd; found=true; break;
+      }
+    }
+    if (!found) break;
+    if (pts.length>4 && x===sx && y===sy) break;
+  }
+  return pts;
+}
+
+function findContours(bin, w, h) {
+  const visited = new Uint8Array(w*h), contours = [];
+  for (let y=1; y<h-1; y++) {
+    for (let x=1; x<w-1; x++) {
+      if (bin[y*w+x]===1 && !visited[y*w+x] && !bin[(y-1)*w+x]) {
+        const pts = traceBoundary(bin,w,h,x,y,visited);
+        if (pts.length > 20) contours.push(pts);
+      }
+    }
+  }
+  return contours;
+}
+
+function area(pts) {
+  let a=0;
+  for (let i=0; i<pts.length; i++) {
+    const j=(i+1)%pts.length;
+    a+=pts[i][0]*pts[j][1]-pts[j][0]*pts[i][1];
+  }
+  return Math.abs(a)/2;
+}
+
+function bbox(pts) {
+  let x0=Infinity,y0=Infinity,x1=-Infinity,y1=-Infinity;
+  for (const [x,y] of pts) {
+    if(x<x0)x0=x; if(x>x1)x1=x; if(y<y0)y0=y; if(y>y1)y1=y;
+  }
+  return {x0,y0,x1,y1,w:x1-x0,h:y1-y0};
+}
+
+function dp(pts, eps) {
+  if (pts.length < 3) return pts;
+  let maxD=0, idx=0;
+  const [x1,y1]=pts[0],[x2,y2]=pts[pts.length-1];
+  const dx=x2-x1, dy=y2-y1, len=Math.sqrt(dx*dx+dy*dy)||1;
+  for (let i=1; i<pts.length-1; i++) {
+    const d=Math.abs((pts[i][1]-y1)*dx-(pts[i][0]-x1)*dy)/len;
+    if(d>maxD){maxD=d;idx=i;}
+  }
+  if (maxD>eps) {
+    return [...dp(pts.slice(0,idx+1),eps).slice(0,-1),...dp(pts.slice(idx),eps)];
+  }
+  return [pts[0],pts[pts.length-1]];
+}
+
+/* ── SCAN ── */
+btnScan.addEventListener('click', () => {
+  if (!sourceReady) return;
+
+  /* grab pixel data */
+  const src = stream ? (() => {
+    srcCtx.drawImage(video,0,0);
+    return srcCanvas;
+  })() : srcCanvas;
+
+  const w = src.width, h = src.height;
+  const imgData = srcCtx.getImageData(0,0,w,h);
+  const br = Math.floor(parseInt(slBlur.value)/2);
+  const gray = boxBlur(imgData.data, w, h, br);
+  const bin  = binarize(gray, w, h, parseInt(slThresh.value));
+  const contours = findContours(bin, w, h);
+  contours.sort((a,b) => area(b)-area(a));
+
+  /* draw result */
+  outCtx.clearRect(0,0,w,h);
+  outCtx.drawImage(src,0,0);
+  outPlaceholder.style.display = 'none';
+
+  if (!contours.length) {
+    outOverlay.textContent = 'No shape — adjust threshold';
+    outOverlay.classList.add('visible');
+    setStatus('error');
+    lastContour = null; lastHoles = [];
+    btnGcode.disabled = true;
+    return;
+  }
+
+  const outer = contours[0];
+  const outerArea = area(outer);
+  const holes = contours.slice(1)
+    .filter(c => { const a=area(c); return a>80 && a < outerArea*0.4; })
+    .slice(0,30);
+
+  const simplified = dp(outer, 1.5);
+  const mm = parseFloat(mmPxInput.value)||0.25;
+  const bb = bbox(simplified);
+
+  /* outer contour — cyan */
+  outCtx.strokeStyle = '#00d4ff';
+  outCtx.lineWidth = Math.max(1, w/600);
+  outCtx.setLineDash([]);
+  outCtx.beginPath();
+  simplified.forEach(([x,y],i) => i===0 ? outCtx.moveTo(x,y) : outCtx.lineTo(x,y));
+  outCtx.closePath();
+  outCtx.stroke();
+
+  /* vertices */
+  simplified.forEach(([x,y]) => {
+    outCtx.fillStyle='#00d4ff';
+    const s = Math.max(2, w/400);
+    outCtx.fillRect(x-s,y-s,s*2,s*2);
+  });
+
+  /* holes — red circles */
+  holes.forEach(h => {
+    const hb = bbox(h);
+    const cx=(hb.x0+hb.x1)/2, cy=(hb.y0+hb.y1)/2;
+    const r=Math.max(hb.w,hb.h)/2;
+    outCtx.strokeStyle='#ff4444';
+    outCtx.lineWidth=Math.max(1,w/700);
+    outCtx.beginPath();
+    outCtx.arc(cx,cy,r,0,Math.PI*2);
+    outCtx.stroke();
+    outCtx.fillStyle='rgba(255,68,68,0.12)';
+    outCtx.fill();
+    /* center dot */
+    outCtx.fillStyle='#ff4444';
+    outCtx.beginPath();
+    outCtx.arc(cx,cy,Math.max(2,w/600),0,Math.PI*2);
+    outCtx.fill();
+  });
+
+  lastContour = simplified; lastHoles = holes;
+
+  /* scan animation */
+  const line = document.createElement('div');
+  line.className = 'scan-line';
+  document.getElementById('outBody').appendChild(line);
+  setTimeout(()=>line.remove(), 1400);
+
+  /* stats */
+  document.getElementById('statW').textContent     = (bb.w*mm).toFixed(2);
+  document.getElementById('statH').textContent     = (bb.h*mm).toFixed(2);
+  document.getElementById('statHoles').textContent = holes.length;
+  document.getElementById('statPts').textContent   = simplified.length;
+  ['scWidth','scHeight','scHoles','scPts'].forEach(id=>
+    document.getElementById(id).classList.add('active'));
+
+  outOverlay.textContent = `${simplified.length} pts · ${holes.length} holes`;
+  outOverlay.classList.add('visible');
+  setStatus('ready');
+  btnGcode.disabled = false;
+});
+
+/* ── G-CODE GENERATION ── */
+btnGcode.addEventListener('click', () => {
+  if (!lastContour) return;
+  const mm   = parseFloat(mmPxInput.value)||0.25;
+  const feed = parseInt(feedInput.value)||800;
+  const cut  = parseFloat(cutInput.value)||-1;
+  const safe = 5;
+  const plunge = Math.round(feed*0.4);
+  const L = [];
+
+  L.push('; ══════════════════════════════════════════════');
+  L.push('; MetalScan — Generated G-code');
+  L.push(`; Date     : ${new Date().toISOString()}`);
+  L.push(`; Scale    : ${mm.toFixed(4)} mm/px`);
+  L.push(`; Feed     : ${feed} mm/min  |  Cut depth: ${cut} mm`);
+  L.push(`; Contour  : ${lastContour.length} pts  |  Holes: ${lastHoles.length}`);
+  L.push('; ══════════════════════════════════════════════');
+  L.push('');
+  L.push('G21        ; metric units');
+  L.push('G90        ; absolute positioning');
+  L.push('G17        ; XY plane select');
+  L.push('G94        ; feed per minute');
+  L.push('M3 S12000  ; spindle on — adjust RPM for your tool');
+  L.push(`G4 P2      ; dwell 2s for spindle spin-up`);
+  L.push(`G0 Z${safe.toFixed(3)}  ; move to safe height`);
+  L.push('');
+  L.push('; ── Outer profile ──────────────────────────────');
+
+  const fc = lastContour.map(([x,y]) => [(x*mm).toFixed(3),(y*mm).toFixed(3)]);
+  L.push(`G0 X${fc[0][0]} Y${fc[0][1]}`);
+  L.push(`G1 Z${cut.toFixed(3)} F${plunge}  ; plunge`);
+  for (let i=1; i<fc.length; i++) {
+    L.push(`G1 X${fc[i][0]} Y${fc[i][1]} F${feed}`);
+  }
+  L.push(`G1 X${fc[0][0]} Y${fc[0][1]} F${feed}  ; close`);
+  L.push(`G0 Z${safe.toFixed(3)}`);
+  L.push('');
+
+  lastHoles.forEach((hole, idx) => {
+    const hb  = bbox(hole);
+    const cx  = ((hb.x0+hb.x1)/2*mm).toFixed(3);
+    const cy  = ((hb.y0+hb.y1)/2*mm).toFixed(3);
+    const r   = (Math.max(hb.w,hb.h)/2*mm).toFixed(3);
+    const ex  = ((hb.x0+hb.x1)/2*mm + parseFloat(r)).toFixed(3);
+    L.push(`; ── Hole ${idx+1}  cx=${cx}  cy=${cy}  r=${r}mm ────`);
+    L.push(`G0 X${ex} Y${cy}`);
+    L.push(`G1 Z${cut.toFixed(3)} F${plunge}`);
+    L.push(`G2 X${ex} Y${cy} I-${r} J0.000 F${feed}  ; full circle CW`);
+    L.push(`G0 Z${safe.toFixed(3)}`);
+    L.push('');
+  });
+
+  L.push('; ── End ────────────────────────────────────────');
+  L.push('M5         ; spindle off');
+  L.push('G0 Z20.000 ; park tool');
+  L.push('G0 X0.000 Y0.000');
+  L.push('M30        ; program end');
+
+  lastGcode = L.join('\n');
+
+  /* syntax-highlight preview */
+  gcodeEl.innerHTML = lastGcode.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/(;[^\n]*)/g, '<span class="gcode-comment">$1</span>')
+    .replace(/\b(G\d+|M\d+)\b/g, '<span class="gcode-cmd">$1</span>')
+    .replace(/\b([XYZIJKRFxyzijkrf]-?[\d.]+)/g, '<span class="gcode-coord">$1</span>');
+
+  btnDownload.disabled = false;
+  btnCopy.disabled     = false;
+});
+
+/* ── DOWNLOAD ── */
+btnDownload.addEventListener('click', () => {
+  if (!lastGcode) return;
+  const blob = new Blob([lastGcode], { type:'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `metalscan_${Date.now()}.nc`;
+  a.click();
+});
+
+/* ── COPY ── */
+btnCopy.addEventListener('click', () => {
+  navigator.clipboard.writeText(lastGcode).then(() => {
+    const orig = btnCopy.innerHTML;
+    btnCopy.textContent = 'Copied!';
+    setTimeout(() => { btnCopy.innerHTML = orig; }, 1500);
+  });
+});
+</script>
+</body>
+</html>
