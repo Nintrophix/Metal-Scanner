@@ -1,0 +1,188 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T00:00:00Z",
+  "title": "Design System: Irontronics",
+  "extensions": {
+    "colorMeta": {
+      "accent": { "role": "primary", "displayName": "Periwinkle Indigo", "canonical": "#5a5fe6", "tonalRamp": ["#23256e", "#3d41b8", "#3f43c2", "#4a4fd6", "#5a5fe6", "#9a9df0", "#c9cbf7", "#eeeffd"] },
+      "accent-hover": { "role": "primary", "displayName": "Pressed Indigo", "canonical": "#4a4fd6" },
+      "accent-press": { "role": "primary", "displayName": "Deep Pressed Indigo", "canonical": "#3f43c2" },
+      "accent-ink": { "role": "primary", "displayName": "Indigo Ink", "canonical": "#3d41b8" },
+      "accent-line": { "role": "primary", "displayName": "Indigo Hairline", "canonical": "#c9cbf7" },
+      "accent-soft": { "role": "primary", "displayName": "Indigo Wash", "canonical": "#eeeffd" },
+      "plinth": { "role": "primary", "displayName": "Plinth Lavender", "canonical": "#ebebf7" },
+      "red": { "role": "secondary", "displayName": "Measurement Red", "canonical": "#e0444c", "tonalRamp": ["#5e1418", "#8a1f25", "#b42a32", "#e0444c", "#ea7a80", "#f2c4c7", "#f8dcde", "#fdeeee"] },
+      "red-ink": { "role": "secondary", "displayName": "Red Ink", "canonical": "#b42a32" },
+      "red-line": { "role": "secondary", "displayName": "Red Hairline", "canonical": "#f2c4c7" },
+      "red-soft": { "role": "secondary", "displayName": "Red Wash", "canonical": "#fdeeee" },
+      "amber": { "role": "tertiary", "displayName": "Workshop Amber", "canonical": "#a86a0c", "tonalRamp": ["#3f2804", "#5e3c06", "#83530a", "#a86a0c", "#d39a45", "#f0dcb4", "#f7ead2", "#fcf4e4"] },
+      "amber-line": { "role": "tertiary", "displayName": "Amber Hairline", "canonical": "#f0dcb4" },
+      "amber-soft": { "role": "tertiary", "displayName": "Amber Wash", "canonical": "#fcf4e4" },
+      "green": { "role": "tertiary", "displayName": "Pass Green", "canonical": "#2c7a54", "tonalRamp": ["#0f2e1f", "#174731", "#215f42", "#2c7a54", "#5ea883", "#c4e3d2", "#d9eee2", "#e8f5ee"] },
+      "green-line": { "role": "tertiary", "displayName": "Green Hairline", "canonical": "#c4e3d2" },
+      "green-soft": { "role": "tertiary", "displayName": "Green Wash", "canonical": "#e8f5ee" },
+      "canvas": { "role": "neutral", "displayName": "Drafting Canvas", "canonical": "#f3f3f6", "tonalRamp": ["#1c1c22", "#55555f", "#74747e", "#b9bac6", "#d3d3da", "#e5e5ea", "#f3f3f6", "#ffffff"] },
+      "surface": { "role": "neutral", "displayName": "Panel White", "canonical": "#ffffff" },
+      "surface-sunk": { "role": "neutral", "displayName": "Sunk Grey", "canonical": "#f8f8fa" },
+      "surface-hover": { "role": "neutral", "displayName": "Hover Grey", "canonical": "#f2f2f5" },
+      "border": { "role": "neutral", "displayName": "Hairline", "canonical": "#e5e5ea" },
+      "border-strong": { "role": "neutral", "displayName": "Firm Hairline", "canonical": "#d3d3da" },
+      "divider": { "role": "neutral", "displayName": "Divider", "canonical": "#ececf0" },
+      "text": { "role": "neutral", "displayName": "Graphite", "canonical": "#1c1c22" },
+      "text-2": { "role": "neutral", "displayName": "Slate", "canonical": "#55555f" },
+      "text-3": { "role": "neutral", "displayName": "Pewter", "canonical": "#74747e" },
+      "metal": { "role": "neutral", "displayName": "Sheet Metal", "canonical": "#e4e5ea" },
+      "metal-edge": { "role": "neutral", "displayName": "Metal Edge", "canonical": "#8d8e9a" },
+      "metal-edge-strong": { "role": "neutral", "displayName": "Metal Edge Strong", "canonical": "#6b6c78" },
+      "datum": { "role": "neutral", "displayName": "Datum Grey", "canonical": "#b9bac6" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Landing hero headline only, left-aligned, two lines." },
+      "headline": { "displayName": "Headline", "purpose": "Landing section titles." },
+      "title": { "displayName": "Title", "purpose": "Landing step titles." },
+      "body": { "displayName": "Body", "purpose": "Workspace base text at 13px." },
+      "body-marketing": { "displayName": "Body (landing)", "purpose": "Landing paragraphs, 52-62ch measure." },
+      "control": { "displayName": "Control", "purpose": "Buttons, segmented items, tabs, fields, list rows, section toggles (600)." },
+      "label": { "displayName": "Label", "purpose": "Field labels, hints, notes, tags, status bar, unit suffixes." },
+      "numeric": { "displayName": "Numeric", "purpose": "Every length, angle, coordinate, count, and G-code line; mono only for numbers." },
+      "pill": { "displayName": "Pill", "purpose": "Dimension text on the drawing." }
+    },
+    "shadows": [
+      { "name": "pop", "value": "0 6px 24px -6px rgba(24, 24, 40, 0.14), 0 1px 3px rgba(24, 24, 40, 0.06)", "purpose": "Menus, sheets, toasts, canvas notes." },
+      { "name": "window", "value": "0 30px 60px -24px rgba(30, 30, 70, 0.28), 0 2px 6px rgba(30, 30, 70, 0.06)", "purpose": "Landing product window only." },
+      { "name": "toolbar-lift", "value": "0 1px 2px rgba(20, 20, 40, 0.05)", "purpose": "Floating canvas toolbar." },
+      { "name": "segment-selected", "value": "0 1px 2px rgba(20, 20, 40, 0.08), 0 0 0 1px var(--border)", "purpose": "Selected item in a segmented control." },
+      { "name": "focus-halo", "value": "0 0 0 3px var(--accent-soft)", "purpose": "Field focus; red-soft when invalid." }
+    ],
+    "motion": [
+      { "name": "ease", "value": "cubic-bezier(0.2, 0.8, 0.2, 1)", "purpose": "Default easing for toasts and the boot fade." },
+      { "name": "t-fast", "value": "120ms", "purpose": "Hover/press colour, border, and background transitions." },
+      { "name": "t", "value": "180ms", "purpose": "Toast entrance and larger state changes." },
+      { "name": "boot-run", "value": "1.1s cubic-bezier(0.45, 0, 0.2, 1) infinite", "purpose": "Boot and loading runner bar; disabled under reduced motion." }
+    ],
+    "breakpoints": [
+      { "name": "workspace-narrow", "value": "1180px" },
+      { "name": "landing-tablet", "value": "1080px" },
+      { "name": "workspace-tablet", "value": "960px" },
+      { "name": "landing-mobile", "value": "760px" },
+      { "name": "workspace-mobile", "value": "720px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one primary action per region: Open workspace, Export, Apply.",
+      "html": "<button class=\"ds-btn ds-btn-primary\">Export <svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14\"/><path d=\"m12 5 7 7-7 7\"/></svg></button>",
+      "css": ".ds-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; padding: 0 10px; border-radius: var(--r-md, 6px); border: 1px solid var(--border, #e5e5ea); background: var(--surface, #fff); color: var(--text, #1c1c22); font: 500 12px/1 'Geist Sans', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background 120ms, border-color 120ms, color 120ms; } .ds-btn-primary { background: var(--accent, #5a5fe6); border-color: var(--accent, #5a5fe6); color: #fff; } .ds-btn-primary:hover { background: var(--accent-hover, #4a4fd6); border-color: var(--accent-hover, #4a4fd6); } .ds-btn-primary:active { background: var(--accent-press, #3f43c2); } .ds-btn:focus-visible { outline: 2px solid var(--accent, #5a5fe6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Default Button",
+      "kind": "button",
+      "refersTo": "button",
+      "description": "Secondary actions on white with a hairline border.",
+      "html": "<button class=\"ds-btn-default\">Try the sample part</button>",
+      "css": ".ds-btn-default { display: inline-flex; align-items: center; height: 28px; padding: 0 10px; border-radius: var(--r-md, 6px); border: 1px solid var(--border, #e5e5ea); background: var(--surface, #fff); color: var(--text, #1c1c22); font: 500 12px/1 'Geist Sans', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background 120ms, border-color 120ms; } .ds-btn-default:hover { background: var(--surface-hover, #f2f2f5); border-color: var(--border-strong, #d3d3da); } .ds-btn-default:active { background: var(--divider, #ececf0); } .ds-btn-default:focus-visible { outline: 2px solid var(--accent, #5a5fe6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Length Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "28px field with mono value and a sans unit suffix; indigo halo on focus, red on invalid.",
+      "html": "<label class=\"ds-field\"><input value=\"56.00\" aria-label=\"Length\"><span class=\"ds-field-suffix\">mm</span></label>",
+      "css": ".ds-field { display: flex; align-items: center; height: 28px; width: 200px; border: 1px solid var(--border, #e5e5ea); border-radius: var(--r-md, 6px); background: var(--surface, #fff); transition: border-color 120ms, box-shadow 120ms; } .ds-field:hover { border-color: var(--border-strong, #d3d3da); } .ds-field:focus-within { border-color: var(--accent, #5a5fe6); box-shadow: 0 0 0 3px var(--accent-soft, #eeeffd); } .ds-field input { flex: 1; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; padding: 0 8px; font: 400 12px 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--text, #1c1c22); } .ds-field-suffix { padding: 0 8px 0 2px; font: 11px 'Geist Sans', ui-sans-serif, sans-serif; color: var(--text-3, #74747e); }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "custom",
+      "refersTo": "segmented",
+      "description": "Units, resize mode, and view switches; the selected item lifts to white.",
+      "html": "<div class=\"ds-seg\" role=\"group\"><button aria-pressed=\"true\">mm</button><button aria-pressed=\"false\">in</button></div>",
+      "css": ".ds-seg { display: inline-flex; gap: 2px; padding: 2px; background: var(--surface-sunk, #f8f8fa); border: 1px solid var(--border, #e5e5ea); border-radius: var(--r-md, 6px); } .ds-seg button { height: 22px; padding: 0 9px; border: 0; border-radius: var(--r-sm, 4px); background: transparent; color: var(--text-2, #55555f); font: 500 12px 'Geist Sans', ui-sans-serif, sans-serif; cursor: pointer; transition: background 120ms, color 120ms; } .ds-seg button:hover { color: var(--text, #1c1c22); } .ds-seg button[aria-pressed='true'] { background: var(--surface, #fff); color: var(--text, #1c1c22); box-shadow: 0 1px 2px rgba(20,20,40,0.08), 0 0 0 1px var(--border, #e5e5ea); } .ds-seg button:focus-visible { outline: 2px solid var(--accent, #5a5fe6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Dimension Pills",
+      "kind": "chip",
+      "refersTo": "dimension-pill",
+      "description": "Indigo edge/hole dimension, red active measurement, outline reference (overall) dimension.",
+      "html": "<div class=\"ds-pills\"><span class=\"ds-pill\">54.12</span><span class=\"ds-pill ds-pill-red\">56</span><span class=\"ds-pill ds-pill-red\">90.2°</span><span class=\"ds-pill\">Ø12.02</span><span class=\"ds-pill ds-pill-ref\">120</span></div>",
+      "css": ".ds-pills { display: flex; gap: 8px; align-items: center; } .ds-pill { display: inline-flex; align-items: center; height: 18px; padding: 0 7px; border-radius: 9px; font: 500 10.5px 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; background: var(--accent, #5a5fe6); color: #fff; white-space: nowrap; } .ds-pill-red { background: var(--red, #e0444c); } .ds-pill-ref { background: var(--surface, #fff); color: var(--accent-ink, #3d41b8); box-shadow: inset 0 0 0 1px var(--accent, #5a5fe6); }"
+    },
+    {
+      "name": "Datum Bubble",
+      "kind": "custom",
+      "refersTo": "datum-bubble",
+      "description": "Circled datum label at the end of a dashed datum line (1, 2, A, B).",
+      "html": "<svg width=\"120\" height=\"40\" viewBox=\"0 0 120 40\"><line x1=\"30\" y1=\"20\" x2=\"120\" y2=\"20\" stroke=\"#b9bac6\" stroke-dasharray=\"5 5\"/><circle cx=\"20\" cy=\"20\" r=\"9\" fill=\"#f8f8fa\" stroke=\"#d3d3da\"/><text x=\"20\" y=\"23.6\" text-anchor=\"middle\" font-family=\"Geist Sans, sans-serif\" font-size=\"10\" font-weight=\"500\" fill=\"#55555f\">A</text></svg>",
+      "css": ""
+    },
+    {
+      "name": "Tags",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Small status and identity tags: neutral, accent, warn, ok, error.",
+      "html": "<div class=\"ds-tags\"><span class=\"ds-tag\">Mill</span><span class=\"ds-tag ds-tag-accent\">Edge E4</span><span class=\"ds-tag ds-tag-warn\">Uncalibrated</span><span class=\"ds-tag ds-tag-ok\">Valid</span><span class=\"ds-tag ds-tag-err\">Self-intersecting</span></div>",
+      "css": ".ds-tags { display: flex; gap: 6px; flex-wrap: wrap; } .ds-tag { display: inline-flex; align-items: center; height: 20px; padding: 0 7px; border-radius: var(--r-sm, 4px); font: 500 11px 'Geist Sans', ui-sans-serif, sans-serif; background: var(--surface-sunk, #f8f8fa); color: var(--text-2, #55555f); border: 1px solid var(--border, #e5e5ea); } .ds-tag-accent { background: var(--accent-soft, #eeeffd); color: var(--accent-ink, #3d41b8); border-color: var(--accent-line, #c9cbf7); } .ds-tag-warn { background: var(--amber-soft, #fcf4e4); color: var(--amber, #a86a0c); border-color: #f0dcb4; } .ds-tag-ok { background: var(--green-soft, #e8f5ee); color: var(--green, #2c7a54); border-color: #c4e3d2; } .ds-tag-err { background: var(--red-soft, #fdeeee); color: var(--red-ink, #b42a32); border-color: #f2c4c7; }"
+    },
+    {
+      "name": "Validation Issues",
+      "kind": "custom",
+      "refersTo": "issue-error",
+      "description": "Checks list rows: error, warning, ok tinted washes with a leading outline icon.",
+      "html": "<ul class=\"ds-issues\"><li class=\"ds-issue ds-issue-err\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m15 9-6 6M9 9l6 6\"/></svg>Hole H2 overlaps the outline.</li><li class=\"ds-issue ds-issue-warn\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z\"/><path d=\"M12 9v4M12 17h.01\"/></svg>Hole H3 is smaller than the tool.</li><li class=\"ds-issue ds-issue-ok\"><svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"m9 12 2 2 4-4\"/></svg>Geometry is valid for the current machining settings.</li></ul>",
+      "css": ".ds-issues { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; width: 260px; } .ds-issue { display: flex; gap: 7px; align-items: flex-start; padding: 6px 8px; border-radius: var(--r-md, 6px); border: 1px solid transparent; font: 400 12px/1.4 'Geist Sans', ui-sans-serif, sans-serif; } .ds-issue svg { flex: none; margin-top: 1px; } .ds-issue:hover { border-color: currentColor; } .ds-issue-err { background: var(--red-soft, #fdeeee); color: var(--red-ink, #b42a32); } .ds-issue-warn { background: var(--amber-soft, #fcf4e4); color: var(--amber, #a86a0c); } .ds-issue-ok { background: var(--green-soft, #e8f5ee); color: var(--green, #2c7a54); }"
+    },
+    {
+      "name": "Canvas Toolbar",
+      "kind": "nav",
+      "refersTo": "canvas-toolbar",
+      "description": "Floating top-right toolbar over the drawing; borderless buttons, selected tool in indigo wash.",
+      "html": "<div class=\"ds-ctools\"><button>Compare</button><button>Photo</button><button class=\"ds-on\">Plan</button><button>3D</button></div>",
+      "css": ".ds-ctools { display: inline-flex; align-items: center; gap: 6px; padding: 4px; background: var(--surface, #fff); border: 1px solid var(--border, #e5e5ea); border-radius: var(--r-lg, 8px); box-shadow: 0 1px 2px rgba(20,20,40,0.05); } .ds-ctools button { height: 28px; padding: 0 10px; border: 1px solid transparent; border-radius: var(--r-md, 6px); background: transparent; color: var(--text, #1c1c22); font: 500 12px 'Geist Sans', ui-sans-serif, sans-serif; cursor: pointer; transition: background 120ms; } .ds-ctools button:hover { background: var(--surface-hover, #f2f2f5); } .ds-ctools button.ds-on { background: var(--accent-soft, #eeeffd); color: var(--accent-ink, #3d41b8); } .ds-ctools button:focus-visible { outline: 2px solid var(--accent, #5a5fe6); outline-offset: 2px; }"
+    },
+    {
+      "name": "Status Bar",
+      "kind": "nav",
+      "refersTo": "status-bar",
+      "description": "28px footer strip: status dots, mono figures, amber warnings, right-aligned edit state.",
+      "html": "<div class=\"ds-status\"><span class=\"ds-si\" style=\"color:#2c7a54\"><i class=\"ds-dot\"></i><span style=\"color:#55555f\">Traced in <b class=\"ds-num\">45</b> ms</span></span><span class=\"ds-si\"><i class=\"ds-dot\" style=\"color:#2c7a54\"></i><b class=\"ds-num\">6.000</b> px/mm</span><span class=\"ds-fill\"></span><span>No edits</span></div>",
+      "css": ".ds-status { display: flex; align-items: center; gap: 16px; height: 28px; padding: 0 12px; background: var(--surface, #fff); border-top: 1px solid var(--border, #e5e5ea); font: 400 11px 'Geist Sans', ui-sans-serif, sans-serif; color: var(--text-2, #55555f); white-space: nowrap; } .ds-si { display: inline-flex; align-items: center; gap: 6px; } .ds-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: inline-block; } .ds-num { font: 400 11px 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; } .ds-fill { flex: 1; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Drawing Is the Interface",
+    "overview": "Irontronics looks like a light, quiet floorplan editor that happens to cut metal. The part drawing sits on a cool near-white canvas in the middle. White inspector panels, a top bar, an icon rail, and a status bar stay at the edges, separated by 1px hairlines. The drawing carries the information: dimensions sit on the geometry as small indigo pills, dashed datum lines with circled labels frame the part, and the measurement in focus turns red. Everything else holds back so that the part and its numbers are the loudest things on screen.\n\nThe density is set for a working tool. The UI is 13px, controls are 28px tall, and inspector sections are compact and separated by hairlines. The landing page uses the same world at a larger scale: white ground, a large left-aligned Geist headline, and the real editor shown in a product window on a pale indigo plinth. It is not a separate marketing skin. The owner's sample UI (a light floorplan editor) is the binding reference. The brand stays understated and precise, with no neon, glow, heavy gradients, glass, or decorative motion.",
+    "keyCharacteristics": [
+      "Cool neutral canvas (#f3f3f6) under white panels, with 1px hairlines doing the structural work.",
+      "One periwinkle-indigo accent for primary action, selection, and every dimension.",
+      "Red reserved for the single active measurement and for errors.",
+      "Geist Sans for words and Geist Mono for numbers, and only numbers.",
+      "Flat chrome. Shadows appear only on things that float over the canvas."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Indigo is the only accent. It marks what you can act on, what is selected, and what is measured. No second brand colour exists.", "section": "colors" },
+      { "name": "The Red Means Now Rule", "body": "Red marks the one measurement currently in focus (selected edge, its angles, and its datum leaders) and errors. Nothing decorative, navigational, or merely \"on\" is red.", "section": "colors" },
+      { "name": "The Mono Is for Numbers Rule", "body": "Geist Mono sets numerals and their glyphs (Ø, °, %) and machine code. Units next to a number (mm, in) go back to Geist Sans in Pewter. Words never appear in mono.", "section": "typography" },
+      { "name": "The Sentence Case Rule", "body": "All labels, buttons, and headings use sentence case, with no uppercase tracking. Hierarchy comes from weight (500 vs 600) and colour (text, text-2, text-3), not size jumps.", "section": "typography" },
+      { "name": "The Float-Only Shadow Rule", "body": "If it sits inside the panel grid, it has no shadow. Only overlays on the canvas and transient layers cast one.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do put measurements on the geometry as pills and keep tools in the edge panels. The canvas stays the largest region at every breakpoint.",
+      "Do use indigo for every dimension, selection, and primary action, and red only for the single measurement in focus and for errors.",
+      "Do set every number in Geist Mono with tabular figures, and its unit in Geist Sans Pewter.",
+      "Do separate surfaces with 1px hairlines (border, divider) and tonal steps before reaching for shadow.",
+      "Do keep controls at 28px height with 6px corners and 12px/500 text.",
+      "Do frame the part with dashed datums and circled 1/2/A/B labels, and render overall dimensions as outline reference pills.",
+      "Do respect reduced motion. Transitions use 120ms or 180ms with `cubic-bezier(0.2, 0.8, 0.2, 1)`."
+    ],
+    "donts": [
+      "Don't use red for toggles, overlays, emphasis, or decoration.",
+      "Don't use a second accent hue, gradients beyond the flat plinth band, glow, glass, or neon.",
+      "Don't wrap landing content in cards. Use hairline-ruled rows and columns.",
+      "Don't set words, labels, or units in mono, or use uppercase-tracked labels.",
+      "Don't give in-grid panels, sections, or rows a shadow.",
+      "Don't introduce a dark \"tech console\" theme or a dashboard of metric cards."
+    ]
+  }
+}

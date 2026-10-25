@@ -1,0 +1,67 @@
+:root {
+  /* Neutrals: cool, very lightly tinted toward the accent. */
+  --canvas: #f3f3f6;
+  --surface: #ffffff;
+  --surface-sunk: #f8f8fa;
+  --surface-hover: #f2f2f5;
+  --border: #e5e5ea;
+  --border-strong: #d3d3da;
+  --divider: #ececf0;
+
+  --text: #1c1c22;
+  --text-2: #55555f;
+  --text-3: #74747e;
+  --text-on-accent: #ffffff;
+
+  /* One accent, used for primary action, selection, and dimensions. */
+  --accent: #5a5fe6;
+  --accent-hover: #4a4fd6;
+  --accent-press: #3f43c2;
+  --accent-soft: #eeeffd;
+  --accent-line: #c9cbf7;
+  --accent-ink: #3d41b8;
+
+  /* Active measurement / errors share the sample's red. */
+  --red: #e0444c;
+  --red-soft: #fdeeee;
+  --red-ink: #b42a32;
+  --amber: #a86a0c;
+  --amber-soft: #fcf4e4;
+  --green: #2c7a54;
+  --green-soft: #e8f5ee;
+
+  /* Drawing */
+  --metal: #e4e5ea;
+  --metal-edge: #8d8e9a;
+  --metal-edge-strong: #6b6c78;
+  --datum: #b9bac6;
+  --toolpath: #5a5fe6;
+  /* Original-scan overlay: neutral, so red stays reserved for the active measurement. */
+  --ghost: #8a8b99;
+
+  --font-sans: 'Geist Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --fs-11: 0.6875rem;
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-16: 1rem;
+
+  --r-sm: 4px;
+  --r-md: 6px;
+  --r-lg: 8px;
+
+  --shadow-pop: 0 6px 24px -6px rgba(24, 24, 40, 0.14), 0 1px 3px rgba(24, 24, 40, 0.06);
+  --shadow-window: 0 30px 60px -24px rgba(30, 30, 70, 0.28), 0 2px 6px rgba(30, 30, 70, 0.06);
+
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 120ms;
+  --t: 180ms;
+
+  --rail-w: 44px;
+  --panel-l: 248px;
+  --panel-r: 280px;
+  --topbar-h: 48px;
+  --status-h: 28px;
+}
